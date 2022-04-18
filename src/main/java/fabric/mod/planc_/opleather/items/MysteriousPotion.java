@@ -1,5 +1,6 @@
 package fabric.mod.planc_.opleather.items;
 
+import fabric.mod.planc_.opleather.blocks.ModBlocks;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -29,8 +30,8 @@ public class MysteriousPotion extends Item {
         final BlockPos blockPos = context.getBlockPos();
         final BlockState blockState = world.getBlockState(blockPos);
         if (blockState.getBlock() == Blocks.CAULDRON) {
-            world.setBlockState(blockPos, Blocks.WATER_CAULDRON.getDefaultState());
-            world.playSound(null, blockPos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.NEUTRAL, 0.5f, 1);
+            world.setBlockState(blockPos, ModBlocks.CURSED_CAULDRON.block.getDefaultState());
+            world.playSound(null, blockPos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.NEUTRAL, 0.5f, 0.3f);
         }
         return super.useOnBlock(context);
     }
