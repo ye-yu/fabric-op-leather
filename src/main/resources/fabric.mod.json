@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "op-leather",
+  "version": "${version}",
+  "name": "Op Leather",
+  "description": "Make Leather Great Again!",
+  "authors": [
+    "yeyu"
+  ],
+  "contact": {
+    "website": "https://github.com/ye-yu/fabric-op-leather",
+    "repo": "https://github.com/ye-yu/fabric-op-leather"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/op-leather/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "fabric.mod.planc_.opleather.client.OpLeatherClient"
+    ],
+    "main": [
+      "fabric.mod.planc_.opleather.OpLeather"
+    ]
+  },
+  "mixins": [
+    "op-leather.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.13.3",
+    "fabric": "*",
+    "minecraft": "1.18.2"
+  }
+}
