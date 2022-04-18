@@ -10,12 +10,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Objects;
 
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
@@ -35,23 +39,32 @@ public abstract class ItemEntityMixin extends Entity {
         tickCoolDown = Math.max(--tickCoolDown, 0);
         if (tickCoolDown == 0) {
             tickCoolDown = 20;
-            final BlockState blockState = world.getBlockState(getBlockPos());
+            final BlockPos pos = getBlockPos();
+            final BlockState state = world.getBlockState(pos);
+            final ItemStack stack = getStack();
 
             // skip if it is not a cauldron block
-            if (blockState.getBlock() != ModBlocks.CURSED_CAULDRON.block) return;
+            if (state.getBlock() != ModBlocks.CURSED_CAULDRON.block) return;
 
             // skip if already been cursed
             // TODO: optimize search if necessary
-            if (EnchantmentHelper.getLevel(ModEnchantments.CURSE_OF_WEBBING.enchantment, getStack()) > 0) return;
+            if (EnchantmentHelper.getLevel(ModEnchantments.CURSE_OF_WEBBING.enchantment, stack) > 0) return;
 
-            if (blockState.get(CursedCauldron.INGREDIENT_ADDED) && ModEnchantments.CURSE_OF_WEBBING.enchantment.isAcceptableItem(getStack())) {
+            if (state.get(CursedCauldron.INGREDIENT_ADDED) && ModEnchantments.CURSE_OF_WEBBING.enchantment.isAcceptableItem(stack)) {
                 // add curse of webbing
-                getStack().addEnchantment(ModEnchantments.CURSE_OF_WEBBING.enchantment, ModEnchantments.CURSE_OF_WEBBING.enchantment.getMinLevel());
-                CursedCauldron.playSoundEffect(world, getBlockPos());
-                LeveledCauldronBlock.decrementFluidLevel(blockState, world, getBlockPos());
+                stack.addEnchantment(ModEnchantments.CURSE_OF_WEBBING.enchantment, ModEnchantments.CURSE_OF_WEBBING.enchantment.getMinLevel());
+                CursedCauldron.playSoundEffect(world, pos);
+                LeveledCauldronBlock.decrementFluidLevel(state, world, pos);
+                final ItemEntity newItemEntity = EntityType.ITEM.create(world);
+                if (Objects.nonNull(newItemEntity)) {
+                    this.remove(RemovalReason.DISCARDED);
+                    newItemEntity.setStack(stack);
+                    newItemEntity.setPosition(getPos());
+                    ((ServerWorld)world).spawnEntityAndPassengers(newItemEntity);
+                }
             } else {
                 this.remove(RemovalReason.DISCARDED);
-                CursedCauldron.explodeOnIngredientWrong(world, getBlockPos(), this, blockState.get(LeveledCauldronBlock.LEVEL));
+                CursedCauldron.explodeOnIngredientWrong(world, pos, this, state.get(LeveledCauldronBlock.LEVEL));
             }
 
         }
