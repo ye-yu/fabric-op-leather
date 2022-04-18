@@ -46,7 +46,8 @@ public class CursedCauldron extends LeveledCauldronBlock {
         player.incrementStat(Stats.FILL_CAULDRON);
         player.incrementStat(Stats.USED.getOrCreateStat(stack.getItem()));
 
-        world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.NEUTRAL, 0.5f, 0.3f - (world.random.nextFloat() * 0.2f));
+        world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.NEUTRAL, 0.5f, world.random.nextFloat(.9f, 1.1f));
+        world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.NEUTRAL, 0.1f, world.random.nextFloat(.9f, 1.1f));
         world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
 
         final var newLevel = Math.min(state.get(LEVEL) + 1, 3);

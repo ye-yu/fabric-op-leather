@@ -28,12 +28,14 @@ public class MysteriousPotion extends Item {
         final World world = context.getWorld();
         if (world.isClient()) return super.useOnBlock(context);
 
-        final BlockPos blockPos = context.getBlockPos();
-        final BlockState blockState = world.getBlockState(blockPos);
+        final BlockPos pos = context.getBlockPos();
+        final BlockState blockState = world.getBlockState(pos);
         if (blockState.getBlock() == Blocks.CAULDRON) {
             context.getStack().decrement(1);
-            world.setBlockState(blockPos, ModBlocks.CURSED_CAULDRON.block.getDefaultState().with(LeveledCauldronBlock.LEVEL, 1));
-            world.playSound(null, blockPos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.NEUTRAL, 0.5f, 0.3f);
+            world.setBlockState(pos, ModBlocks.CURSED_CAULDRON.block.getDefaultState().with(LeveledCauldronBlock.LEVEL, 1));
+            world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.NEUTRAL, 0.5f, world.random.nextFloat(.9f, 1.1f));
+            world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.NEUTRAL, 0.1f, world.random.nextFloat(.9f, 1.1f));
+            return ActionResult.CONSUME;
         }
         return super.useOnBlock(context);
     }
