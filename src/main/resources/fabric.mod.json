@@ -18,6 +18,9 @@
     "client": [
       "fabric.mod.planc_.opleather.client.OpLeatherClient"
     ],
+    "server": [
+      "fabric.mod.planc_.opleather.server.OpLeatherServer"
+    ],
     "main": [
       "fabric.mod.planc_.opleather.OpLeather"
     ]
