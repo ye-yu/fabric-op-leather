@@ -8,7 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.cauldron.CauldronBehavior;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -34,11 +34,12 @@ public class CursedCauldron extends LeveledCauldronBlock {
 
     public static final CauldronBehavior ADD_CURSE_TO_CAULDRON = (state, world, pos, player, hand, stack) -> {
         if (state.get(INGREDIENT_ADDED)) {
-            CursedCauldron.explodeOnIngredientWrong(world, pos, player);
+            CursedCauldron.explodeOnIngredientWrong(world, pos, player, state.get(LEVEL));
             return ActionResult.CONSUME;
         }
         world.setBlockState(pos, state.with(INGREDIENT_ADDED, true));
         CursedCauldron.playSoundEffect(world, pos);
+        world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         return ActionResult.CONSUME;
     };
 
@@ -47,7 +48,7 @@ public class CursedCauldron extends LeveledCauldronBlock {
         if (world.isClient()) return ActionResult.CONSUME;
 
         if (state.get(LEVEL) == 3) {
-            CursedCauldron.explodeOnIngredientWrong(world, pos, player);
+            CursedCauldron.explodeOnIngredientWrong(world, pos, player, state.get(LEVEL));
             return ActionResult.CONSUME;
         }
 
@@ -55,17 +56,18 @@ public class CursedCauldron extends LeveledCauldronBlock {
         player.incrementStat(Stats.USED.getOrCreateStat(stack.getItem()));
 
         CursedCauldron.playSoundEffect(world, pos);
+        world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         final var newLevel = Math.min(state.get(LEVEL) + 1, 3);
         world.setBlockState(pos, state.with(LEVEL, newLevel));
         return ActionResult.CONSUME;
     };
 
-    private static void explodeOnIngredientWrong(World world, BlockPos pos, PlayerEntity player) {
+    public static void explodeOnIngredientWrong(World world, BlockPos pos, Entity entity, int power) {
         world.setBlockState(pos, Blocks.AIR.getDefaultState());
-        final var middleX = (pos.getX() + .5 + player.getPos().getX()) * 0.5;
-        final var middleY = (pos.getY() + .5 + player.getPos().getY()) * 0.5;
-        final var middleZ = (pos.getZ() + .5 + player.getPos().getZ()) * 0.5;
-        world.createExplosion(null, middleX, middleY, middleZ, 3, Explosion.DestructionType.DESTROY);
+        final var middleX = (pos.getX() + .5 + entity.getPos().getX()) * 0.5;
+        final var middleY = (pos.getY() + .5 + entity.getPos().getY()) * 0.5;
+        final var middleZ = (pos.getZ() + .5 + entity.getPos().getZ()) * 0.5;
+        world.createExplosion(null, middleX, middleY, middleZ, 1 + power * 0.5f, Explosion.DestructionType.DESTROY);
     }
 
     static {
@@ -87,7 +89,6 @@ public class CursedCauldron extends LeveledCauldronBlock {
     public static void playSoundEffect(final World world, final BlockPos pos) {
         world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.NEUTRAL, 0.5f, world.random.nextFloat(.9f, 1.1f));
         world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.NEUTRAL, 0.1f, world.random.nextFloat(.9f, 1.1f));
-        world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
     }
 
     @Override

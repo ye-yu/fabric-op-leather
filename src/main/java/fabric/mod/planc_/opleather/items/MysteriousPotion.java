@@ -12,6 +12,7 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.event.GameEvent;
 
 public class MysteriousPotion extends Item {
     public MysteriousPotion(Settings settings) {
@@ -33,6 +34,7 @@ public class MysteriousPotion extends Item {
             context.getStack().decrement(1);
             world.setBlockState(pos, ModBlocks.CURSED_CAULDRON.block.getDefaultState().with(LeveledCauldronBlock.LEVEL, 1));
             CursedCauldron.playSoundEffect(world, pos);
+            world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             return ActionResult.CONSUME;
         }
         return super.useOnBlock(context);
