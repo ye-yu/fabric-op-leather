@@ -26,6 +26,7 @@ public class OpLeather implements ModInitializer {
 
         for (ModEnchantments enchantment : ModEnchantments.values()) {
             Registry.register(Registry.ENCHANTMENT, enchantment.id, enchantment.enchantment);
+            enchantment.enchantment.onInitialize();
         }
     }
 }
