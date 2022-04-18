@@ -1,10 +1,10 @@
 {
   "variants": {
     "level=1": {
-      "model": "op-leather:block/cursed_cauldron"
+      "model": "op-leather:block/cursed_cauldron_l1"
     },
     "level=2": {
-      "model": "op-leather:block/cursed_cauldron"
+      "model": "op-leather:block/cursed_cauldron_l2"
     },
     "level=3": {
       "model": "op-leather:block/cursed_cauldron"
