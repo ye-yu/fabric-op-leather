@@ -91,7 +91,6 @@ public class CurseOfWebbing extends CurseEnchantment {
 
             if (hasCobweb) {
                 if (!entityAttributeInstance.hasModifier(modifier)) {
-                    System.out.println("Adding speed modifier");
                     entityAttributeInstance.addTemporaryModifier(modifier);
                 }
             } else entityAttributeInstance.removeModifier(CURSE_OF_WEBBING_BOOST_ID);
