@@ -67,7 +67,7 @@ public class CursedCauldron extends LeveledCauldronBlock {
         final var middleX = (pos.getX() + .5 + entity.getPos().getX()) * 0.5;
         final var middleY = (pos.getY() + .5 + entity.getPos().getY()) * 0.5;
         final var middleZ = (pos.getZ() + .5 + entity.getPos().getZ()) * 0.5;
-        world.createExplosion(null, middleX, middleY, middleZ, 1 + power * 0.5f, Explosion.DestructionType.DESTROY);
+        world.createExplosion(null, middleX, middleY, middleZ, power * 0.5f, Explosion.DestructionType.DESTROY);
     }
 
     static {
