@@ -64,11 +64,7 @@ public abstract class CurseEnchantment extends Enchantment {
     }
 
 
-    /**
-     * All allowed states are when cauldron ingredient state <= key.
-     * @return map of long to ingredient count
-     */
-    public HashMap<Long, IngredientCount[]> possibleIngredientsStates() {
+    public final Supplier<HashMap<Long, IngredientCount[]>> lazyPossibleIngredientStates = Suppliers.memoize(() ->  {
         final HashMap<Long, IngredientCount[]> currentSet = new HashMap<>();
         final IngredientCount[] ingredients = getIngredients();
         for (int[] combination : Utils.allCombinations(ingredients.length)) {
@@ -93,5 +89,12 @@ public abstract class CurseEnchantment extends Enchantment {
         }
 
         return currentSet;
+    });
+    /**
+     * All allowed states are when cauldron ingredient state <= key.
+     * @return map of long to ingredient count
+     */
+    public HashMap<Long, IngredientCount[]> possibleIngredientsStates() {
+        return lazyPossibleIngredientStates.get();
     }
 }
