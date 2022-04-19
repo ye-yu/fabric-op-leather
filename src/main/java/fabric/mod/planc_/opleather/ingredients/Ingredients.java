@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 public enum Ingredients {
     FERMENTED_SPIDER_EYE(Suppliers.memoize(() -> Items.FERMENTED_SPIDER_EYE), 1),
     WITHER_SKULL(Suppliers.memoize(() -> Items.WITHER_SKELETON_SKULL), 1),
+    GLOWSTONE_DUST(Suppliers.memoize(() -> Items.GLOWSTONE_DUST), 3),
     ;
 
     public final Supplier<Item> item;

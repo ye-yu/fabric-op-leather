@@ -57,6 +57,7 @@ public class CurseOfRage extends CurseEnchantment {
 
     private static final IngredientCount[] INGREDIENTS = new IngredientCount[] {
             new IngredientCount(Ingredients.WITHER_SKULL, 1),
+            new IngredientCount(Ingredients.GLOWSTONE_DUST, 2),
     };
     @Override
     public IngredientCount[] getIngredients() {

@@ -18,13 +18,13 @@ public class OpLeather implements ModInitializer {
     public static final Supplier<TagKey<Item>> LEATHER_ARMORS = Suppliers.memoize(() -> TagKey.of(Registry.ITEM_KEY, Identifier.tryParse("leather_armors")));
     @Override
     public void onInitialize() {
-        for (ModItems item : ModItems.values()) {
-            Registry.register(Registry.ITEM, item.id, item.item.get());
-        }
-
         for (ModBlocks block : ModBlocks.values()) {
             Registry.register(Registry.BLOCK, block.id, block.block);
             block.onRegisterListener.accept(block);
+        }
+
+        for (ModItems item : ModItems.values()) {
+            Registry.register(Registry.ITEM, item.id, item.item.get());
         }
 
         for (ModEnchantments enchantment : ModEnchantments.values()) {

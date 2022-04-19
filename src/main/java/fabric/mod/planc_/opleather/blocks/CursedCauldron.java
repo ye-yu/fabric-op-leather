@@ -1,6 +1,8 @@
 package fabric.mod.planc_.opleather.blocks;
 
 import com.google.common.base.Suppliers;
+import fabric.mod.planc_.opleather.enchantments.ModEnchantments;
+import fabric.mod.planc_.opleather.ingredients.IngredientCount;
 import fabric.mod.planc_.opleather.ingredients.Ingredients;
 import fabric.mod.planc_.opleather.items.ModItems;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -23,11 +25,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.explosion.Explosion;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class CursedCauldron extends LeveledCauldronBlock {
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final BooleanProperty INGREDIENT_ADDED = BooleanProperty.of("ingredient_added");
     public static final BooleanProperty BAD_INGREDIENT = BooleanProperty.of("bad_ingredient");
 
@@ -67,7 +74,11 @@ public class CursedCauldron extends LeveledCauldronBlock {
         }
 
         // check if there is any matching curse
-
+        final HashMap<Long, IngredientCount[]> allPossibleIngredientStates = ModEnchantments.ALL_POSSIBLE_INGREDIENT_STATES.get();
+        final Long currentCauldronIngredientState = ModEnchantments.getCurrentCauldronIngredientState(state);
+        LOGGER.info("ADD_INGREDIENT_TO_CAULDRON: {}", currentCauldronIngredientState);
+        final IngredientCount[] ingredientCounts = allPossibleIngredientStates.get(currentCauldronIngredientState);
+        LOGGER.info("ADD_INGREDIENT_TO_CAULDRON: Matched ingredients: {}", () -> Arrays.stream(ingredientCounts).map(Object::toString).toString());
         world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         return ActionResult.CONSUME;
     };

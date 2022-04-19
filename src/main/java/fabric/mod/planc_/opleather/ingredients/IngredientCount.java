@@ -22,4 +22,9 @@ public class IngredientCount extends ObjectIntImmutablePair<Ingredients> {
     public static int getAmountForHashKey(final Ingredients ingredients, final long hash) {
         return (int) (hash >> (ingredients.ordinal() * 2)) & 0b11;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %dx", this.left, this.rightInt());
+    }
 }
