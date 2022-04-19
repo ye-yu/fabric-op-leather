@@ -97,4 +97,13 @@ public abstract class CurseEnchantment extends Enchantment {
     public HashMap<Long, IngredientCount[]> possibleIngredientsStates() {
         return lazyPossibleIngredientStates.get();
     }
+
+
+    public long getIngredientHash() {
+        long sum = 0;
+        for (IngredientCount ingredient : getIngredients()) {
+            sum += ingredient.shiftForHashKey();
+        }
+        return sum;
+    }
 }

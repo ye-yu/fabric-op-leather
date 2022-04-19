@@ -54,7 +54,7 @@ public class CursedCauldron extends LeveledCauldronBlock {
         player.incrementStat(Stats.FILL_CAULDRON);
         player.incrementStat(Stats.USED.getOrCreateStat(stack.getItem()));
 
-        CursedCauldron.playSoundEffect(world, pos);
+        CursedCauldron.playFilledSoundEffect(world, pos);
         world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         final var newLevel = Math.min(state.get(LEVEL) + 1, 3);
         world.setBlockState(pos, state.with(LEVEL, newLevel));
@@ -79,14 +79,20 @@ public class CursedCauldron extends LeveledCauldronBlock {
             return ActionResult.CONSUME;
         }
 
-        state = state.with(ingredients.property, Math.min(state.get(ingredients.property) + 1, ingredients.maxAmount));
-
         // check if there is any matching curse
+        state = state.with(ingredients.property, Math.min(state.get(ingredients.property) + 1, ingredients.maxAmount));
         final HashMap<Long, IngredientCount[]> allPossibleIngredientStates = ModEnchantments.ALL_POSSIBLE_INGREDIENT_STATES.get();
         final Long currentCauldronIngredientState = ModEnchantments.getCurrentCauldronIngredientState(state);
         LOGGER.info("ADD_INGREDIENT_TO_CAULDRON: {}", currentCauldronIngredientState);
         final IngredientCount[] ingredientCounts = allPossibleIngredientStates.get(currentCauldronIngredientState);
-        LOGGER.info("ADD_INGREDIENT_TO_CAULDRON: Matched ingredients: {}", () -> Objects.isNull(ingredientCounts) ? "null" : Arrays.stream(ingredientCounts).map(Object::toString).toString());
+        LOGGER.info("ADD_INGREDIENT_TO_CAULDRON: Matched ingredients: {}", Objects.isNull(ingredientCounts) ? "null" : Arrays.stream(ingredientCounts).map(Object::toString).toString());
+
+        if (Objects.isNull(ingredientCounts)) {
+            // TODO: trigger bad ingredient first and then explode after a few seconds
+            CursedCauldron.explodeOnIngredientWrong(world, pos, player, state.get(LEVEL));
+            return ActionResult.CONSUME;
+        }
+
         world.setBlockState(pos, state);
         world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         return ActionResult.CONSUME;
@@ -151,6 +157,21 @@ public class CursedCauldron extends LeveledCauldronBlock {
                     pos.getY(),
                     pos.getZ() + .5,
                     150,
+                    0.5,
+                    1,
+                    0.5,
+                    .01);
+        }
+    }
+
+    public static void playFilledSoundEffect(final World world, final BlockPos pos) {
+        world.playSound(null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.NEUTRAL, 0.5f, world.random.nextFloat(.9f, 1.1f));
+        if (world instanceof ServerWorld serverWorld) {
+            serverWorld.spawnParticles(ParticleTypes.POOF,
+                    pos.getX() + .5,
+                    pos.getY(),
+                    pos.getZ() + .5,
+                    50,
                     0.5,
                     1,
                     0.5,
