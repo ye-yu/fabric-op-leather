@@ -10,17 +10,19 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 public enum Ingredients {
-    FERMENTED_SPIDER_EYE(Suppliers.memoize(() -> Items.FERMENTED_SPIDER_EYE), 1),
-    WITHER_SKULL(Suppliers.memoize(() -> Items.WITHER_SKELETON_SKULL), 1),
-    GLOWSTONE_DUST(Suppliers.memoize(() -> Items.GLOWSTONE_DUST), 3),
+    FERMENTED_SPIDER_EYE(Suppliers.memoize(() -> Items.FERMENTED_SPIDER_EYE), 1, 0x601a4c),
+    WITHER_SKULL(Suppliers.memoize(() -> Items.WITHER_SKELETON_SKULL), 1, 0x656b55),
+    GLOWSTONE_DUST(Suppliers.memoize(() -> Items.GLOWSTONE_DUST), 3, 0xaf8721),
     ;
 
     public final Supplier<Item> item;
     public final int maxAmount;
 
     public final IntProperty property;
+    public final int color;
 
-    Ingredients(Supplier<Item> item, int maxAmount) {
+    Ingredients(Supplier<Item> item, int maxAmount, int color) {
+        this.color = color;
         this.item = item;
         this.maxAmount = maxAmount;
         this.property = IntProperty.of(String.format("cauldron_ingredient_%s", this.name().toLowerCase(Locale.ENGLISH)), 0, this.maxAmount);
