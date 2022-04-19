@@ -15,6 +15,8 @@ import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -109,6 +111,17 @@ public class CursedCauldron extends LeveledCauldronBlock {
         final var middleY = (pos.getY() + .5 + entity.getPos().getY()) * 0.5;
         final var middleZ = (pos.getZ() + .5 + entity.getPos().getZ()) * 0.5;
         world.createExplosion(null, middleX, middleY, middleZ, power * 0.5f, Explosion.DestructionType.DESTROY);
+        if (world instanceof ServerWorld serverWorld) {
+            serverWorld.spawnParticles(ParticleTypes.POOF,
+                    pos.getX() + .5,
+                    pos.getY(),
+                    pos.getZ() + .5,
+                    150,
+                    0.5,
+                    1,
+                    0.5,
+                    .01);
+        }
     }
 
     public CursedCauldron() {
@@ -132,6 +145,17 @@ public class CursedCauldron extends LeveledCauldronBlock {
     public static void playSoundEffect(final World world, final BlockPos pos) {
         world.playSound(null, pos, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.NEUTRAL, 0.5f, world.random.nextFloat(.9f, 1.1f));
         world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.NEUTRAL, 0.1f, world.random.nextFloat(.9f, 1.1f));
+        if (world instanceof ServerWorld serverWorld) {
+            serverWorld.spawnParticles(ParticleTypes.POOF,
+                    pos.getX() + .5,
+                    pos.getY(),
+                    pos.getZ() + .5,
+                    150,
+                    0.5,
+                    1,
+                    0.5,
+                    .01);
+        }
     }
 
     @Override
