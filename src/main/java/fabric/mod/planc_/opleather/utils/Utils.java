@@ -4,7 +4,9 @@ import fabric.mod.planc_.opleather.OpLeather;
 import fabric.mod.planc_.opleather.enchantments.ModEnchantments;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -51,5 +53,32 @@ public class Utils {
         int tmp = input[a];
         input[a] = input[b];
         input[b] = tmp;
+    }
+
+    public static void combinationHelper(List<int[]> combinations, int[] data, int start, int end, int index) {
+        if (index == data.length) {
+            int[] combination = data.clone();
+            combinations.add(combination);
+        } else if (start <= end) {
+            data[index] = start;
+            combinationHelper(combinations, data, start + 1, end, index + 1);
+            combinationHelper(combinations, data, start + 1, end, index);
+        }
+    }
+
+    public static List<int[]> generateCombinations(int n, int r) {
+        List<int[]> combinations = new ArrayList<>();
+        combinationHelper(combinations, new int[r], 0, n-1, 0);
+        return combinations;
+    }
+
+    public static List<int[]> allCombinations(int length) {
+        List<int[]> combinations = new ArrayList<>();
+        for (int i = 1; i < length; i++) {
+            final List<int[]> ints = generateCombinations(length, i);
+            combinations.addAll(ints);
+        }
+        combinations.add(IntStream.range(0, length).toArray());
+        return combinations;
     }
 }

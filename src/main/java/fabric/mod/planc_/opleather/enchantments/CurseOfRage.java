@@ -56,7 +56,7 @@ public class CurseOfRage extends CurseEnchantment {
     }
 
     private static final IngredientCount[] INGREDIENTS = new IngredientCount[] {
-            new IngredientCount(Ingredients.WITHER_SKULL, 1),
+            new IngredientCount(Ingredients.WITHER_SKULL, 2),
             new IngredientCount(Ingredients.FERMENTED_SPIDER_EYE, 3),
     };
     @Override
