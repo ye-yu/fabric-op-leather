@@ -24,7 +24,7 @@ import java.util.UUID;
 
 public class CurseOfWebbing extends CurseEnchantment {
 
-    public static final LimitedLogging LOGGER = new LimitedLogging(() -> LogManager.getLogger(CurseOfWebbing.class));
+    public static final LimitedLogging LOGGER = new LimitedLogging(LogManager.getLogger(CurseOfWebbing.class));
 
     public CurseOfWebbing() {
         super(Rarity.RARE, EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
@@ -62,8 +62,8 @@ public class CurseOfWebbing extends CurseEnchantment {
 
     @Override
     public void tick(ServerPlayerEntity player, int strength) {
-        final var logger = LOGGER.get();
-        logger.ifPresent($ -> $.info("CurseOfWebbing tick"));
+        final var logger = LOGGER.getLogger();
+        logger.info("CurseOfWebbing tick");
         final ServerWorld world = player.getWorld();
 
         // block collision tick
