@@ -41,7 +41,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Cu
                 if (matchedEnchantment == null) continue;
 
                 final int levelFromNbt = EnchantmentHelper.getLevelFromNbt(nbtCompound);
-                enchantmentMap.merge(matchedEnchantment, levelFromNbt, Math::max);
+                enchantmentMap.merge(matchedEnchantment, levelFromNbt, matchedEnchantment.enchantment.canStack() ? Integer::sum : Math::max);
+                final Integer level = enchantmentMap.get(matchedEnchantment);
+                matchedEnchantment.enchantment.onEquipOrRefresh((ServerPlayerEntity)(Object)this, level);
             }
         }
     }

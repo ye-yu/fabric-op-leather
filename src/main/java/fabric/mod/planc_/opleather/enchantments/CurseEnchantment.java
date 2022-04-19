@@ -1,6 +1,8 @@
 package fabric.mod.planc_.opleather.enchantments;
 
+import com.google.common.base.Suppliers;
 import fabric.mod.planc_.opleather.OpLeather;
+import fabric.mod.planc_.opleather.ingredients.IngredientCount;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -8,11 +10,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public abstract class CurseEnchantment extends Enchantment {
-    public static final ItemPredicate LEATHER_PREDICATE = ItemPredicate.Builder.create().tag(OpLeather.LEATHER_ARMORS).build();
+import java.util.function.Supplier;
 
-    protected CurseEnchantment(Rarity weight, EnchantmentTarget type, EquipmentSlot[] slotTypes) {
-        super(weight, type, slotTypes);
+public abstract class CurseEnchantment extends Enchantment {
+    public static final Supplier<ItemPredicate> LEATHER_PREDICATE = Suppliers.memoize(() -> ItemPredicate.Builder.create().tag(OpLeather.LEATHER_ARMORS.get()).build());
+
+    protected CurseEnchantment(EnchantmentTarget type, EquipmentSlot[] slotTypes) {
+        super(Rarity.RARE, type, slotTypes);
     }
 
     @Override
@@ -37,9 +41,19 @@ public abstract class CurseEnchantment extends Enchantment {
 
     @Override
     public boolean isAcceptableItem(ItemStack stack) {
-        return super.isAcceptableItem(stack) && LEATHER_PREDICATE.test(stack);
+        return super.isAcceptableItem(stack) && LEATHER_PREDICATE.get().test(stack);
     }
-    public abstract void tick(ServerPlayerEntity player, int strength);
+    public void tick(ServerPlayerEntity player, int strength) {}
 
-    public abstract void onInitialize();
+    public void onInitialize() {}
+
+    public void onEquipOrRefresh(ServerPlayerEntity player, final int level) {}
+
+    public boolean canStack() {
+        return false;
+    }
+
+    public IngredientCount[] getIngredients() {
+        return new IngredientCount[]{};
+    }
 }

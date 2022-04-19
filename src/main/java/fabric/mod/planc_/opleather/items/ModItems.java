@@ -10,11 +10,11 @@ import java.util.function.Supplier;
 public enum ModItems {
     MYSTERIOUS_POTION(MysteriousPotion::new);
 
-    public final Item item;
+    public final Supplier<Item> item;
     public final Identifier id = Utils.identifier(this.name().toLowerCase(Locale.ENGLISH));
 
     ModItems(Supplier<Item> itemGenerator) {
-        this.item = itemGenerator.get();
+        this.item = itemGenerator;
     }
 
     @Override

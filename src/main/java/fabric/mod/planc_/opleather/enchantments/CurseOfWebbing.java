@@ -1,5 +1,7 @@
 package fabric.mod.planc_.opleather.enchantments;
 
+import fabric.mod.planc_.opleather.ingredients.IngredientCount;
+import fabric.mod.planc_.opleather.ingredients.Ingredients;
 import fabric.mod.planc_.opleather.interfaces.CurseOfWebbingMessenger;
 import fabric.mod.planc_.opleather.utils.LimitedLogging;
 import fabric.mod.planc_.opleather.utils.Utils;
@@ -9,7 +11,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
@@ -27,32 +28,7 @@ public class CurseOfWebbing extends CurseEnchantment {
     public static final LimitedLogging LOGGER = new LimitedLogging(LogManager.getLogger(CurseOfWebbing.class));
 
     public CurseOfWebbing() {
-        super(Rarity.RARE, EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
-    }
-
-    @Override
-    public int getMinLevel() {
-        return 1;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 2;
-    }
-
-    @Override
-    public boolean isTreasure() {
-        return true;
-    }
-
-    @Override
-    public boolean isCursed() {
-        return true;
-    }
-
-    @Override
-    public boolean isAcceptableItem(ItemStack stack) {
-        return super.isAcceptableItem(stack) && LEATHER_PREDICATE.test(stack);
+        super(EnchantmentTarget.ARMOR_FEET, new EquipmentSlot[]{EquipmentSlot.FEET});
     }
 
     public static final Identifier SNEAKING_VAR = Utils.identifier("sneaking_var");
@@ -110,5 +86,13 @@ public class CurseOfWebbing extends CurseEnchantment {
     @Override
     public void onInitialize() {
         Registry.register(Registry.CUSTOM_STAT, SNEAKING_VAR.getPath(), SNEAKING_VAR);
+    }
+
+    private static final IngredientCount[] INGREDIENTS = new IngredientCount[] {
+            new IngredientCount(Ingredients.FERMENTED_SPIDER_EYE, 1)
+    };
+    @Override
+    public IngredientCount[] getIngredients() {
+        return INGREDIENTS;
     }
 }
