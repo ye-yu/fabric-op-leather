@@ -30,6 +30,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -57,7 +59,9 @@ public class CursedCauldron extends LeveledCauldronBlock {
         return ActionResult.CONSUME;
     };
     public static final Function<Ingredients, CauldronBehavior> ADD_INGREDIENT_TO_CAULDRON = ingredients -> (state, world, pos, player, hand, stack) -> {
-        world.setBlockState(pos, state.with(INGREDIENT_ADDED, true));
+        if (world.isClient()) return ActionResult.PASS;
+        state = state.with(INGREDIENT_ADDED, true);
+        world.setBlockState(pos, state);
         CursedCauldron.playSoundEffect(world, pos);
 
         if (state.get(BAD_INGREDIENT)) {
@@ -73,24 +77,29 @@ public class CursedCauldron extends LeveledCauldronBlock {
             return ActionResult.CONSUME;
         }
 
+        state = state.with(ingredients.property, Math.min(state.get(ingredients.property) + 1, ingredients.maxAmount));
+
         // check if there is any matching curse
         final HashMap<Long, IngredientCount[]> allPossibleIngredientStates = ModEnchantments.ALL_POSSIBLE_INGREDIENT_STATES.get();
         final Long currentCauldronIngredientState = ModEnchantments.getCurrentCauldronIngredientState(state);
         LOGGER.info("ADD_INGREDIENT_TO_CAULDRON: {}", currentCauldronIngredientState);
         final IngredientCount[] ingredientCounts = allPossibleIngredientStates.get(currentCauldronIngredientState);
-        LOGGER.info("ADD_INGREDIENT_TO_CAULDRON: Matched ingredients: {}", () -> Arrays.stream(ingredientCounts).map(Object::toString).toString());
+        LOGGER.info("ADD_INGREDIENT_TO_CAULDRON: Matched ingredients: {}", () -> Objects.isNull(ingredientCounts) ? "null" : Arrays.stream(ingredientCounts).map(Object::toString).toString());
+        world.setBlockState(pos, state);
         world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         return ActionResult.CONSUME;
     };
 
-    public static final Supplier<Object2ObjectOpenHashMap<Item, CauldronBehavior>> ENCHANTED_CAULDRON_BEHAVIOUR = Suppliers.memoize(() -> {
+
+
+
+    public static final Supplier<Map<Item, CauldronBehavior>> CURSED_CAULDRON_BEHAVIOUR = Suppliers.memoize(() -> {
         final Object2ObjectOpenHashMap<Item, CauldronBehavior> map = CauldronBehavior.createMap();
         for (Ingredients ingredient : Ingredients.values()) {
             final Item item = ingredient.item.get();
             map.put(item, ADD_INGREDIENT_TO_CAULDRON.apply(ingredient));
         }
         map.put(ModItems.MYSTERIOUS_POTION.item.get(), INCREASE_CURSE_POWER);
-
         return map;
     });
 
@@ -103,7 +112,7 @@ public class CursedCauldron extends LeveledCauldronBlock {
     }
 
     public CursedCauldron() {
-        super(FabricBlockSettings.copy(Blocks.CAULDRON).luminance($ -> 7), $ -> false, ENCHANTED_CAULDRON_BEHAVIOUR.get());
+        super(FabricBlockSettings.copy(Blocks.CAULDRON).luminance($ -> 7), $ -> false, CURSED_CAULDRON_BEHAVIOUR.get());
         BlockState defaultState = getStateManager()
                 .getDefaultState()
                 .with(INGREDIENT_ADDED, false)

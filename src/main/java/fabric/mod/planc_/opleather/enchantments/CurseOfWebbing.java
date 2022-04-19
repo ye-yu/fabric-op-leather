@@ -38,6 +38,7 @@ public class CurseOfWebbing extends CurseEnchantment {
 
     @Override
     public void tick(ServerPlayerEntity player, int strength) {
+        super.tick(player, strength);
         final var logger = LOGGER.getLogger();
         logger.info("CurseOfWebbing tick");
         final ServerWorld world = player.getWorld();

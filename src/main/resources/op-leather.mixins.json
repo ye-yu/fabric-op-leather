@@ -7,7 +7,6 @@
     "CobwebBlockMixin",
     "ItemEntityMixin",
     "ServerPlayerEntityMixin"
-
   ],
   "client": [
   ],
