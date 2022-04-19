@@ -3,6 +3,7 @@ package fabric.mod.planc_.opleather.enchantments;
 import com.google.common.base.Suppliers;
 import fabric.mod.planc_.opleather.OpLeather;
 import fabric.mod.planc_.opleather.ingredients.IngredientCount;
+import fabric.mod.planc_.opleather.ingredients.Ingredients;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -10,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.HashSet;
 import java.util.function.Supplier;
 
 public abstract class CurseEnchantment extends Enchantment {
@@ -55,5 +57,14 @@ public abstract class CurseEnchantment extends Enchantment {
 
     public IngredientCount[] getIngredients() {
         return new IngredientCount[]{};
+    }
+
+    public HashSet<Long> possibleIngredientsStates(HashSet<Long> currentList, Ingredients...ignore) {
+        return null;
+    }
+
+    public HashSet<Long> possibleIngredientsStates() {
+        final HashSet<Long> currentSet = new HashSet<>();
+        return this.possibleIngredientsStates(currentSet);
     }
 }

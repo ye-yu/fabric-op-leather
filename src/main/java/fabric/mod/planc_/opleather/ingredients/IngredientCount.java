@@ -12,7 +12,11 @@ public class IngredientCount extends ObjectIntImmutablePair<Ingredients> {
     }
 
     public long shiftForHashKey() {
-        return (long) this.right << (this.left.ordinal() * 2);
+        return IngredientCount.shiftForHashKey(left, right);
+    }
+
+    public static long shiftForHashKey(Ingredients ingredients, int amount) {
+        return (long) amount << (ingredients.ordinal() * 2);
     }
 
     public static int getAmountForHashKey(final Ingredients ingredients, final long hash) {
