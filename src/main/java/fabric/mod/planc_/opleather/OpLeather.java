@@ -4,7 +4,9 @@ import com.google.common.base.Suppliers;
 import fabric.mod.planc_.opleather.blocks.ModBlocks;
 import fabric.mod.planc_.opleather.enchantments.ModEnchantments;
 import fabric.mod.planc_.opleather.items.ModItems;
+import fabric.mod.planc_.opleather.schedulers.EndWorldTickScheduler;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.item.Item;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -31,5 +33,7 @@ public class OpLeather implements ModInitializer {
             Registry.register(Registry.BLOCK, block.id, block.block);
             block.onRegisterListener.accept(block);
         }
+
+        ServerTickEvents.END_WORLD_TICK.register($ -> EndWorldTickScheduler.tickAllEvents());
     }
 }

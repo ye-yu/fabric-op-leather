@@ -46,6 +46,8 @@ public enum ModBlocks {
 
         if (count > 0) return (int) ((red << 16) + (green << 8) + blue);
 
+        if (state.get(CursedCauldron.BAD_INGREDIENT)) return 0x24061b;
+
         if (state.get(CursedCauldron.INGREDIENT_ADDED)) return 0xea192b;
         return 0x8919ea;
     }, modBlocks.block));
