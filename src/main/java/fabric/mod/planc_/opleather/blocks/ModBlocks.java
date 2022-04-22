@@ -33,9 +33,6 @@ public enum ModBlocks {
                 red /= count;
                 green /= count;
                 blue /= count;
-
-                System.out.printf("Updating color, count %d: %h%n", count, (int) ((red << 16) + (green << 8) + blue));
-
             }
         }
 

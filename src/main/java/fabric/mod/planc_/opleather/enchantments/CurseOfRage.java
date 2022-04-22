@@ -31,7 +31,6 @@ public class CurseOfRage extends CurseEnchantment {
 
     @Override
     public void onEquipOrRefresh(ServerPlayerEntity player, int level) {
-        System.out.printf("Player equipped curse of rage: %d%n", level);
         EntityAttributeInstance healthAttributeInstance = player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
         EntityAttributeInstance strengthAttributeInstance = player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         if (Objects.isNull(healthAttributeInstance) || Objects.isNull(strengthAttributeInstance)) return;

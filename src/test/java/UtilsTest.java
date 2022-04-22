@@ -1,5 +1,3 @@
-package test;
-
 import fabric.mod.planc_.opleather.utils.Utils;
 
 import java.util.Arrays;

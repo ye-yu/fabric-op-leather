@@ -20,7 +20,6 @@ public class EnchantmentHelperMixin {
         if (!(entity instanceof CurseEnchantmentHolder holder)) return;
         final Integer curseOfRageLevel = holder.getEnchantmentList().getOrDefault(ModEnchantments.CURSE_OF_RAGE, 0);
         if (curseOfRageLevel > 0) {
-            System.out.printf("Increased sweeping damage: %d%n", curseOfRageLevel * 2);
             cir.setReturnValue(curseOfRageLevel * 2);
             cir.cancel();
         }

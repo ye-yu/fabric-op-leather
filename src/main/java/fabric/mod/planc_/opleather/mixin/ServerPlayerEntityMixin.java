@@ -53,7 +53,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Cu
             if (enchantmentMap.containsKey(previousEnchantment)) continue;
             previousEnchantment.enchantment.onEquipOrRefresh((ServerPlayerEntity)(Object)this, 0);
         }
-        System.out.printf("rebuildEnchantmentList: %s%n", enchantmentMap);
     }
 
     @Override

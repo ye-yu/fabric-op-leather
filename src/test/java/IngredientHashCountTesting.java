@@ -1,5 +1,3 @@
-package test;
-
 import fabric.mod.planc_.opleather.enchantments.ModEnchantments;
 import fabric.mod.planc_.opleather.ingredients.IngredientCount;
 import fabric.mod.planc_.opleather.ingredients.Ingredients;

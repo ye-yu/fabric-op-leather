@@ -14,9 +14,6 @@ public class ScreenHandlerMixin {
 
     @Inject(method = "onSlotClick", at = @At("RETURN"))
     private void onSetStackEnd(int slot, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        if (player instanceof CurseEnchantmentHolder) {
-            System.out.printf("onSlotClick, slot %d%n", slot);
-        }
         if (slot < 4 || slot >= 8 || !(player instanceof CurseEnchantmentHolder holder)) return;
         holder.rebuildEnchantmentList();
     }
