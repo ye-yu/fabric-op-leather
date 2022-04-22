@@ -2,6 +2,7 @@ package fabric.mod.planc_.opleather.mixin;
 
 import com.mojang.authlib.GameProfile;
 import fabric.mod.planc_.opleather.enchantments.ModEnchantments;
+import fabric.mod.planc_.opleather.interfaces.CurseEnchantmentHolder;
 import fabric.mod.planc_.opleather.interfaces.CurseOfWebbingMessenger;
 import fabric.mod.planc_.opleather.utils.Utils;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -19,9 +20,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity implements CurseOfWebbingMessenger {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements CurseOfWebbingMessenger, CurseEnchantmentHolder {
 
     private final HashMap<ModEnchantments, Integer> enchantmentMap = new HashMap<>();
 
@@ -29,7 +31,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Cu
         super(world, pos, yaw, profile);
     }
 
-    private void rebuildEnchantmentList() {
+    public void rebuildEnchantmentList() {
+        final var previousEnchantments = enchantmentMap.keySet().stream().toList();
         enchantmentMap.clear();
         for (ItemStack stack : getInventory().armor) {
             final var nbtList = stack.getEnchantments();
@@ -46,6 +49,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Cu
                 matchedEnchantment.enchantment.onEquipOrRefresh((ServerPlayerEntity)(Object)this, level);
             }
         }
+        for (ModEnchantments previousEnchantment : previousEnchantments) {
+            if (enchantmentMap.containsKey(previousEnchantment)) continue;
+            previousEnchantment.enchantment.onEquipOrRefresh((ServerPlayerEntity)(Object)this, 0);
+        }
+        System.out.printf("rebuildEnchantmentList: %s%n", enchantmentMap);
+    }
+
+    @Override
+    public Map<ModEnchantments, Integer> getEnchantmentList() {
+        return enchantmentMap;
     }
 
     @Override

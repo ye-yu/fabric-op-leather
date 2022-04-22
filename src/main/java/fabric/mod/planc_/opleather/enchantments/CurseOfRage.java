@@ -9,7 +9,6 @@ import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.stat.Stats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -32,22 +31,25 @@ public class CurseOfRage extends CurseEnchantment {
 
     @Override
     public void onEquipOrRefresh(ServerPlayerEntity player, int level) {
-        final var healthTakenLevelStat = Stats.CUSTOM.getOrCreateStat(HEALTH_TAKEN_LEVEL_VAR);
-
-        final var healthTaken = player.getStatHandler().getStat(healthTakenLevelStat);
-
-        if (level == healthTaken) return;
-
-        player.resetStat(healthTakenLevelStat);
+        System.out.printf("Player equipped curse of rage: %d%n", level);
         EntityAttributeInstance healthAttributeInstance = player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
         EntityAttributeInstance strengthAttributeInstance = player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         if (Objects.isNull(healthAttributeInstance) || Objects.isNull(strengthAttributeInstance)) return;
-        final var healthModifier = new EntityAttributeModifier(HEALTH_TAKEN_STRENGTH_BOOST_ID, "Health taken for strength boost", -(0.03f * (1.0f + level * 0.35f)), EntityAttributeModifier.Operation.ADDITION);
-        final var strengthModifier = new EntityAttributeModifier(HEALTH_TAKEN_STRENGTH_BOOST_ID, "Health taken for strength boost", 0.03f * (1.0f + level * 0.35f), EntityAttributeModifier.Operation.ADDITION);
+
+        if (level == 0) {
+            healthAttributeInstance.removeModifier(HEALTH_TAKEN_STRENGTH_BOOST_ID);
+            strengthAttributeInstance.removeModifier(HEALTH_TAKEN_STRENGTH_BOOST_ID);
+            player.setHealth(player.getHealth());
+            return;
+        }
+
+        final var healthModifier = new EntityAttributeModifier(HEALTH_TAKEN_STRENGTH_BOOST_ID, "Health taken for strength boost", -level * 8, EntityAttributeModifier.Operation.ADDITION);
+        final var strengthModifier = new EntityAttributeModifier(HEALTH_TAKEN_STRENGTH_BOOST_ID, "Strength increased for strength boost", level * 12, EntityAttributeModifier.Operation.ADDITION);
         healthAttributeInstance.removeModifier(HEALTH_TAKEN_STRENGTH_BOOST_ID);
         strengthAttributeInstance.removeModifier(HEALTH_TAKEN_STRENGTH_BOOST_ID);
         healthAttributeInstance.addTemporaryModifier(healthModifier);
         strengthAttributeInstance.addTemporaryModifier(strengthModifier);
+        player.setHealth(player.getMaxHealth());
     }
 
     @Override
